@@ -22,6 +22,11 @@ class Direction(Enum):
     RIGHT_TO_LEFT = auto()
 
 
+class Lane(Enum):
+    LEFT = auto()
+    RIGHT = auto()
+
+
 class FluidInputFrom(Enum):
     # Machines without fluid input ports can use NONE.
     NONE = auto()
@@ -31,7 +36,6 @@ class FluidInputFrom(Enum):
     RIGHT = auto()
 
 
-# Legacy tile enum kept for compatibility while migrating to split enums.
 class Cell(IntEnum):
     EMPTY = 0
     MACHINE = 1
@@ -42,10 +46,10 @@ class Cell(IntEnum):
 
 
 CELL_TO_CHAR = {
-    Cell.EMPTY: " ",        # 空白
-    Cell.MACHINE: "M",      # 組立機
-    Cell.BELT: "B",         # ベルト
-    Cell.UNDER_IN: "U",     # 地下ベルト入口
-    Cell.UNDER_OUT: "D",    # 地下ベルト出口
-    Cell.INSERTER: "I",     # インサータ
+    Cell.EMPTY: " ",        # Empty
+    Cell.MACHINE: "M",      # Assembler or Plant
+    Cell.BELT: "B",         # Belt
+    Cell.UNDER_IN: "U",     # Underground Belt In
+    Cell.UNDER_OUT: "D",    # Underground Belt Out
+    Cell.INSERTER: "I",     # Inserter
 }
