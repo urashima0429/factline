@@ -5,10 +5,11 @@ from enums import MachineKind
 from models import LineSpec, MachineIO
 
 DEFAULT_INPUT = {
-    "hub_input_items": ["copper-plate", "iron-plate"],
+    "bus_input_items": ["copper-plate", "iron-plate"],
     "box_input_items": [],
-    "hub_output_item": "electronic-circuit",
+    "bus_output_items": ["electronic-circuit"],
     "box_output_items": [],
+    "underground_max_distance": 4,
     "machines": [
         {
             "kind": "ASSEMBLER_3X3",
@@ -32,10 +33,10 @@ def load_spec(input_path: str | None) -> LineSpec:
     else:
         data = json.loads(Path(input_path).read_text(encoding="utf-8"))
 
-    hub_input_items = data.get("hub_input_items", [])
-    if not isinstance(hub_input_items, list):
-        raise ValueError("hub_input_items must be a list")
-    normalized_hub_input_items = _normalize_item_list(hub_input_items, "hub_input_items")
+    bus_input_items = data.get("bus_input_items", [])
+    if not isinstance(bus_input_items, list):
+        raise ValueError("bus_input_items must be a list")
+    normalized_bus_input_items = _normalize_item_list(bus_input_items, "bus_input_items")
 
     box_input_items = data.get("box_input_items", [])
     if not isinstance(box_input_items, list):
@@ -50,6 +51,10 @@ def load_spec(input_path: str | None) -> LineSpec:
     machines_raw = data.get("machines", [])
     if not isinstance(machines_raw, list) or len(machines_raw) == 0:
         raise ValueError("machines must be a non-empty list")
+
+    underground_max_distance = int(data.get("underground_max_distance", 4))
+    if underground_max_distance < 0:
+        raise ValueError("underground_max_distance must be >= 0")
 
     machine_kinds: list[MachineKind] = []
     machine_ios: list[MachineIO] = []
@@ -75,17 +80,17 @@ def load_spec(input_path: str | None) -> LineSpec:
         item for machine_io in machine_ios for item in machine_io.input_items
     }
     all_solid_input_items = (
-        set(normalized_hub_input_items)
+        set(normalized_bus_input_items)
         | set(normalized_box_input_items)
         | input_items_from_machines
     )
-    hub_output_item = _normalize_optional_item(data.get("hub_output_item"), "hub_output_item")
-    output_items: list[str] = []
-    if hub_output_item is not None:
-        output_items.append(hub_output_item)
-    output_items.extend(normalized_box_output_items)
+    bus_output_items_raw = data.get("bus_output_items", [])
+    if not isinstance(bus_output_items_raw, list):
+        raise ValueError("bus_output_items must be a list")
+    normalized_bus_output_items = _normalize_item_list(bus_output_items_raw, "bus_output_items")
+
     has_output = (
-        (data.get("hub_output_item") is not None)
+        (len(normalized_bus_output_items) > 0)
         or (len(box_output_items) > 0)
         or len(machine_ios) > 0
     )
@@ -93,9 +98,11 @@ def load_spec(input_path: str | None) -> LineSpec:
         machine_kind=first_kind,
         height=height,
         input_count=len(all_solid_input_items),
-        hub_input_items=tuple(normalized_hub_input_items),
+        underground_max_distance=underground_max_distance,
+        bus_input_items=tuple(normalized_bus_input_items),
         box_input_items=tuple(normalized_box_input_items),
-        output_items=tuple(output_items),
+        bus_output_items=tuple(normalized_bus_output_items),
+        box_output_items=tuple(normalized_box_output_items),
         has_output=has_output,
         machine_count=machine_count,
         machine_ios=tuple(machine_ios),
@@ -164,12 +171,3 @@ def _normalize_item_list(values: list[object], field_name: str) -> list[str]:
             raise ValueError(f"{field_name} cannot contain empty values")
         result.append(item)
     return result
-
-
-def _normalize_optional_item(value: object | None, field_name: str) -> str | None:
-    if value is None:
-        return None
-    item = str(value).strip()
-    if item == "":
-        raise ValueError(f"{field_name} must be non-empty when provided")
-    return item

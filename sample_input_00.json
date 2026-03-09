@@ -1,6 +1,7 @@
 {
-  "hub_input_items": ["copper-plate", "iron-plate"],
-  "hub_output_item": "electronic-circuit",
+  "bus_input_items": ["copper-plate", "iron-plate"],
+  "bus_output_items": ["electronic-circuit"],
+  "underground_max_distance": 4,
   "box_output_items": [],
   "machines": [
     {

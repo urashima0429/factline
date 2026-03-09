@@ -1,23 +1,7 @@
-# Factline
-
-Factline is ...
-
-## Usage
-```bash
-python3 main.py --input sample_input.json
-```
-
-## Tests
-```bash
-python3 -m unittest discover -s tests -p "test_*.py"
-```
-
-## Input
-```
 {
   "bus_input_items": ["copper-plate", "iron-plate"],
   "bus_output_items": ["electronic-circuit"],
-  "underground_max_distance": 4,
+  "underground_max_distance": 0,
   "box_output_items": [],
   "machines": [
     {
@@ -34,11 +18,3 @@ python3 -m unittest discover -s tests -p "test_*.py"
     }
   ]
 }
-```
-
-## Output
-
-```
-python3 main.py --input sample_input_01.json
-UNSAT
-```

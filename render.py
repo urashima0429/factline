@@ -39,6 +39,20 @@ def _build_2x2_canvas(solution: Solution) -> list[list[str]]:
                 canvas[py + 1][px] = d
                 canvas[py + 1][px + 1] = d
                 continue
+            if cell == Cell.UNDER_IN:
+                d = _belt_dir_char(solution, x, y)
+                canvas[py][px] = "S"
+                canvas[py][px + 1] = d
+                canvas[py + 1][px] = d
+                canvas[py + 1][px + 1] = d
+                continue
+            if cell == Cell.UNDER_OUT:
+                d = _belt_dir_char(solution, x, y)
+                canvas[py][px] = "T"
+                canvas[py][px + 1] = d
+                canvas[py + 1][px] = d
+                canvas[py + 1][px + 1] = d
+                continue
             if cell == Cell.INSERTER:
                 d = _inserter_dir_char(solution, x, y)
                 canvas[py][px] = "I"
@@ -62,6 +76,8 @@ def _build_2x2_canvas(solution: Solution) -> list[list[str]]:
 
 def _belt_dir_char(solution: Solution, x: int, y: int) -> str:
     direction = solution.belt_directions[y][x]
+    if direction == Direction.NONE:
+        return "?"
     if direction == Direction.TOP_TO_BOTTOM:
         return "v"
     if direction == Direction.BOTTOM_TO_TOP:
@@ -75,6 +91,8 @@ def _belt_dir_char(solution: Solution, x: int, y: int) -> str:
 
 def _inserter_dir_char(solution: Solution, x: int, y: int) -> str:
     direction = solution.inserter_directions[y][x]
+    if direction == Direction.NONE:
+        return "?"
     if direction == Direction.TOP_TO_BOTTOM:
         return "v"
     if direction == Direction.BOTTOM_TO_TOP:
@@ -135,6 +153,10 @@ def _build_line_labels(solution: Solution) -> list[str]:
 
 def _line_index(tile_y: int, direction: Direction, lane: Lane) -> int:
     base = tile_y * 2
+    if direction == Direction.NONE:
+        return base
+    if lane == Lane.NONE:
+        lane = Lane.LEFT
     if direction == Direction.LEFT_TO_RIGHT:
         return base if lane == Lane.LEFT else base + 1
     if direction == Direction.RIGHT_TO_LEFT:
@@ -145,6 +167,8 @@ def _line_index(tile_y: int, direction: Direction, lane: Lane) -> int:
 
 
 def _direction_prefix(direction: Direction) -> str:
+    if direction == Direction.NONE:
+        return "?"
     if direction == Direction.LEFT_TO_RIGHT:
         return ">"
     if direction == Direction.RIGHT_TO_LEFT:

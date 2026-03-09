@@ -16,9 +16,11 @@ class LineSpec:
     machine_kind: MachineKind
     height: int
     input_count: int
-    hub_input_items: tuple[str, ...] = ()
+    underground_max_distance: int = 4
+    bus_input_items: tuple[str, ...] = ()
     box_input_items: tuple[str, ...] = ()
-    output_items: tuple[str, ...] = ()
+    bus_output_items: tuple[str, ...] = ()
+    box_output_items: tuple[str, ...] = ()
     has_output: bool = True
     machine_count: int = 1
     machine_ios: tuple[MachineIO, ...] = ()

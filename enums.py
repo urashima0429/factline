@@ -1,55 +1,43 @@
 from enum import Enum, IntEnum, auto
 
 
-class MachineKind(Enum):
-    ASSEMBLER_3X3 = auto()
-    PLANT_4X4 = auto()
-
-
-class TileKind(Enum):
-    EMPTY = auto()
-    MACHINE = auto()
+class Cell(IntEnum):
+    EMPTY = 0
     BELT = auto()
-    UNDERGROUND_BELT_IN = auto()
-    UNDERGROUND_BELT_OUT = auto()
+    UNDER_IN = auto()
+    UNDER_OUT = auto()
     INSERTER = auto()
+    MACHINE = auto()
+    BOX = auto()
+    PIPE = auto()
 
 
-class Direction(Enum):
+class Direction(IntEnum):
+    NONE = 0
     TOP_TO_BOTTOM = auto()
     BOTTOM_TO_TOP = auto()
     LEFT_TO_RIGHT = auto()
     RIGHT_TO_LEFT = auto()
 
 
-class Lane(Enum):
+class Lane(IntEnum):
+    NONE = 0
     LEFT = auto()
     RIGHT = auto()
 
 
-class FluidInputFrom(Enum):
-    # Machines without fluid input ports can use NONE.
-    NONE = auto()
-    TOP = auto()
-    BOTTOM = auto()
-    LEFT = auto()
-    RIGHT = auto()
+class MachineKind(Enum):
+    ASSEMBLER_3X3 = "ASSEMBLER_3X3"
+    PLANT_4X4 = "PLANT_4X4"
 
 
-class Cell(IntEnum):
-    EMPTY = 0
-    MACHINE = 1
-    BELT = 2
-    UNDER_IN = 4
-    UNDER_OUT = 5
-    INSERTER = 6
-
-
-CELL_TO_CHAR = {
-    Cell.EMPTY: " ",        # Empty
-    Cell.MACHINE: "M",      # Assembler or Plant
-    Cell.BELT: "B",         # Belt
-    Cell.UNDER_IN: "U",     # Underground Belt In
-    Cell.UNDER_OUT: "D",    # Underground Belt Out
-    Cell.INSERTER: "I",     # Inserter
+CELL_TO_CHAR: dict[Cell, str] = {
+    Cell.EMPTY: " ",
+    Cell.BELT: "B",
+    Cell.UNDER_IN: "S",
+    Cell.UNDER_OUT: "T",
+    Cell.INSERTER: "I",
+    Cell.MACHINE: "M",
+    Cell.BOX: "C",
+    Cell.PIPE: "P",
 }
